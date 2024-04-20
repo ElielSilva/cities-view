@@ -51,14 +51,14 @@ export default function Login() {
         style={styles.input}
         value={email}
         onChangeText={setEmail}
-        defaultValue={email}
+        //defaultValue={email}
         placeholder="email"
       />
       <TextInput 
         style={styles.input}
         value={password}
         onChangeText={setPassword}
-        defaultValue={password}
+        //defaultValue={password}
         placeholder="senha"
       />
       {faledTryLogin && <Text style={{color:'red'}}>Login ou senha inválido!</Text>}
