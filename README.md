@@ -15,24 +15,31 @@ Este é um projeto de exemplo desenvolvido com React Native e Expo.
   npm install -g expo-cli
 
 # Instalação
- -  1. Clone este repositório:
+ 1. Clone este repositório:
     ```sh
     git clone https://github.com/ElielSilva/cities-view.git
+    ```
 
- -  2. Navegue até o diretório do projeto:
+2. Navegue até o diretório do projeto:
     ```sh
     cd cities-view
- - 3. Instale as dependências:
+    ```
+
+ 3. Instale as dependências:
     ```sh
     npm install
+    ```
 
 # Uso
-- Inicie o projeto:
+1. Inicie o projeto:
     ```sh
     expo start
+    ```
+leia o qrcode na tela do terminal e divertasse.
 
 Use o Expo Go para visualizar o aplicativo em um dispositivo físico ou um emulador.
-Contribuição
+
+## Contribuição
 Contribuições são bem-vindas! Para mudanças importantes, abra primeiro uma issue para discutir o que você gostaria de mudar.
 
 
