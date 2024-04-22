@@ -1,89 +1,84 @@
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 
 import { useEffect, useState } from 'react';
 
+import { requestAllCities } from '../../utils/api'
 import  City  from '../../components/City';
 
+interface ICityDefault {
+  id: number;
+  nome: string;
+  uf: string;
+}
+
 export default function HomeScreen() {
-  const [cities , setCities] = useState([]);
-  const [citiesForPages , setCitiesForPages] = useState([]);
-  const [pagesNumber , setPagesNumber] = useState(1);
-  const [seach , setSeach] = useState('');
-  
-  const [ isLoading , setIsLoading ] = useState(true);
-  
-  async function name() {
-    
-    const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome');
-    
-    const responseFromJson = await response.json();
-    setCities(responseFromJson);
-    setCitiesForPages(responseFromJson.slice(pagesNumber - 1, pagesNumber + 10));
-    
-    //
-    //console.log(responseFromJson.slice(0,10));
-    //console.log(responseFromJson[0].microrregiao);
-  }
+  const [cities , setCities] = useState<ICityDefault[]|[]>([]);
+  const [citiesForPages , setCitiesForPages] = useState<ICityDefault[]|[]>([]);
+  const [citiesForPagesSearch , setCitiesForPagesSearch] = useState<ICityDefault[]|[]>([]);
+  const [pagesNumber , setPagesNumber] = useState<number>(1);
+  const [seach , setSeach] = useState<string>('');
+
   useEffect(() => {
-    setIsLoading(true);
-    
-    name()
-    setIsLoading(false);
+    requestApiCity()
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
-    setCitiesForPages(cities.slice((pagesNumber * 10) - 10 , pagesNumber * 10));
-    
-    
-    setIsLoading(false);
+    setCitiesForPages(citiesForPagesSearch.slice((pagesNumber * 10) - 10 , pagesNumber * 10));
   }, [pagesNumber]);
 
   useEffect(() => {
-    setIsLoading(true);
-    
-    
-    setIsLoading(false);
+    const citiesFiltredForSeach = cities.filter(
+      (currCity:ICityDefault) => currCity.nome.slice(0, seach.length).toLowerCase() == seach.toLowerCase()
+    );
+    setPagesNumber(1);
+    setCitiesForPagesSearch(citiesFiltredForSeach);
+    setCitiesForPages(citiesFiltredForSeach.slice(0, 10));
   }, [seach]);
 
- 
-
+  async function requestApiCity() {
+    const response = await requestAllCities();
+    setCities(response);
+    setCitiesForPages(response.slice(pagesNumber - 1, pagesNumber + 10));
+    setCitiesForPagesSearch(response);
+  }
 
   return(
-    <View >
-      <View >
-      <View >
-        <TextInput 
-          style={{backgroundColor:'blue'}}
-          value={seach}
-          onChangeText={setSeach}
-          defaultValue={seach}
-          placeholder="Pesquisar"
-        />
-      </View>
-        {seach.length ?
-        seach && cities.filter((currCity:any) => currCity.nome === seach.slice(0, seach.length)).slice(0,10)
-          : citiesForPages.map((city:any) => {
-          //console.log(city.nome, city.id);
-          return(
-            <City key={city.id} name={city.nome} cityId={city.id} />
-          );
-        })}
-
-        { 
-          seach && cities.filter((currCity:any) => currCity.nome === seach.slice(0, seach.length)).slice(0,10) 
+    <View style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            value={seach}
+            onChangeText={setSeach}
+            placeholder="Pesquisar"
+            />
+        </View>
+        {
+          citiesForPages.map((city:ICityDefault) => {
+            return(
+              <City key={city.id} name={city.nome} uf={city.uf} cityId={city.id} />
+            )
+          })
         }
-        
-        <Button
-          title="<"
-          onPress={() => pagesNumber>1 && setPagesNumber(pagesNumber - 1)}
-        />
-        <Text>{pagesNumber}</Text>
-        <Button
-          title=">"
-          onPress={() => setPagesNumber(pagesNumber + 1)}
+
+        <View style={styles.viewButton}>
+          <Pressable
+            style={styles.buttomPrevius}
+            onPress={() => pagesNumber > 1 && setPagesNumber(pagesNumber - 1)}
+          >
+            <Text style={styles.buttonText}>Anterior</Text>
+          </Pressable>
           
-        />
+          <Text style={styles.pageNumber}>{pagesNumber}</Text>
+          
+          <Pressable
+            style={styles.buttomPrevius}
+            onPress={() =>  {
+              citiesForPagesSearch.length/(10 * pagesNumber) > 1 && setPagesNumber(pagesNumber + 1)}}
+          >
+            <Text style={styles.buttonText}>proximo</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -106,6 +101,38 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+
+  viewButton:{
+    flexDirection: 'row',
+  },
+  buttomPrevius: {
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  pageNumber: {
+    fontSize: 16,
+    marginHorizontal: 10,
+  },
+
+  searchContainer: {
+    width: 300,
+    margin: 10,
+  },
+  searchInput: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    height: 40,
   },
 });
 

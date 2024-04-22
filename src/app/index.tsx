@@ -46,19 +46,17 @@ export default function Login() {
   return (
     <View style={styles.container}>
       
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Cities View</Text>
       <TextInput 
         style={styles.input}
         value={email}
         onChangeText={setEmail}
-        //defaultValue={email}
         placeholder="email"
       />
       <TextInput 
         style={styles.input}
         value={password}
         onChangeText={setPassword}
-        //defaultValue={password}
         placeholder="senha"
       />
       {faledTryLogin && <Text style={{color:'red'}}>Login ou senha inválido!</Text>}
