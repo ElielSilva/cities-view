@@ -37,6 +37,9 @@ Este é um projeto de exemplo desenvolvido com React Native e Expo.
     ```
 leia o qrcode na tela do terminal e divertasse.
 
+login: a@a.c
+senha: 123456
+
 Use o Expo Go para visualizar o aplicativo em um dispositivo físico ou um emulador.
 
 ## Contribuição
